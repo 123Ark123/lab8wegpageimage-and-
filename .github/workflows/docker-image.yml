@@ -14,10 +14,10 @@ jobs:
     - uses: actions/checkout@v3
     - name: Build the Docker image
       run: |
-        echo "${{ secrets.DOCKERPASSWORD }}" | docker login -u "NiloTheDerg" --password-stdin
+        echo "${{ secrets.DOCKERPASSWORD }}" | docker login -u "sparksdarkfox" --password-stdin
         docker build -t cool_docker .
-        docker tag cool_docker Nilothederg/dockerimagename:tag
-        docker push Nilothederg/dockerimagename:tag
+        docker tag cool_docker sparksdarkfox/dockerimagename:tag
+        docker push sparksdarkfox/dockerimagename:tag
     - name: Create kubeconfig
       run: |
         mkdir ${HOME}/.kube
