@@ -16,8 +16,8 @@ jobs:
       run: |
         echo "${{ secrets.DOCKERPASSWORD }}" | docker login -u "Nilothederg" --password-stdin
         docker build -t cool_docker .
-        docker tag cool_docker Nilothederg/nice_docker:latest
-        docker push Nilothederg/nice_docker:latest
+        docker tag cool_docker Nilothederg/dockerimagename:tag
+        docker push Nilothederg/dockerimagename:tag
     - name: Create kubeconfig
       run: |
         mkdir ${HOME}/.kube
