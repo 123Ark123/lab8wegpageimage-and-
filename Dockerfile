@@ -11,6 +11,5 @@ WORKDIR /app
 COPY src1/html /usr/share/nginx/html
 #copy the files for html from our working directory to the  direcotry that nginx will use
 
-
 CMD [ "nginx", "-g", "daemon off;"]
 # exec form
