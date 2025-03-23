@@ -1,34 +1,33 @@
-name: Docker Image CI
+name: Deploy to Kubernetes
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [main]
 
 jobs:
-
-  build:
-
+  build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: |
-        echo "${{ secrets.DOCKERPASSWORD }}" | docker login -u "sparksdarkfox" --password-stdin
-        docker build -t cool_docker .
-        docker tag cool_docker sparksdarkfox/dockerimagename:tag
-        docker push sparksdarkfox/dockerimagename:tag
-    - name: Create kubeconfig
-      run: |
-        mkdir ${HOME}/.kube
-        echo ${{secrets.KUBE_CONFIG}} | base64 --decode > ${HOME}/.kube/config
-    - name: Debug DNS
-      run: |
-        nslookup kubernetes.docker.internal
-        cat /etc/resolv.conf
-    - name: Use context
-      run: |
-        kubectl version
-        kubectl config view
-    - name: Tell k8s to restart the cluster
-      run:  kubectl rollout restart deployment cst407-deployment
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Build Docker Image
+        run: docker build -t your-dockerhub-username/image-name:latest .
+
+      - name: Configure Kubernetes
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > ~/.kube/config
+          kubectl cluster-info
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERUSERNAME }}  # Add this secret if needed
+          password: ${{ secrets.DOCKERPASSWORD }}
+
+      - name: Push Docker Image
+        run: docker push your-dockerhub-username/image-name:latest
+
+      - name: Deploy to Cluster
+        run: kubectl apply -f deployment.yaml
